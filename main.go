@@ -1,7 +1,17 @@
 package main
 
-import "fmt"
+import (
+	//"github.com/gin-gonic/gin"
+	"github.com/DeniesKresna/gocms/Config"
+	"github.com/DeniesKresna/gocms/Routers"
+)
 
-func main(){
-	fmt.Println("Hello world")
+var err error
+
+func main() {
+	Config.ConnectDB()
+
+	r := Routers.SetupRouter()
+	// running
+	r.Run()
 }
