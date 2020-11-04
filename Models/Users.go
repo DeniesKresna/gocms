@@ -1,26 +1,27 @@
 package Models
 
 import (
-	//"fmt"
 	//_ "github.com/go-sql-driver/mysql"
+	"github.com/DeniesKresna/gocms/Helpers"
 	"gorm.io/gorm"
 	"github.com/go-playground/validator/v10"
 	"github.com/gin-gonic/gin"
+	"strconv"
 )
 
-type UserShow struct {
+type User struct {
 	gorm.Model
 	Name     string `json:"name"`
 	Password     string `json:"-"`
-	RoleId   uint8 `json:"role_id"`
+	RoleId   uint `json:"role_id"`
 	Email string `json:"email"`
 }
 
 type UserCreate struct{
-	Name string `json:"name" validate:"required"`
-	Password string `json:"password" validate:"required"`
-	Email uint8 `json:"email" validate:"required, email"`
-	RoleId uint8 `json:"role_id" validate:"required"`
+	Name string `form:"name" validate:"required"`
+	Password string `form:"password" validate:"required"`
+	Email string `form:"email" validate:"required,email"`
+	RoleId uint `form:"role_id" validate:"required"`
 }
 
 type UserUpdate struct{
@@ -30,8 +31,13 @@ type UserUpdate struct{
 var v *validator.Validate
 
 func ValidateUserCreate(c *gin.Context, input *UserCreate) error{
-	if err := c.BindJSON(input); err != nil{
-		return err
+	generatePassword, _ := Api.HashPassword(c.PostForm("password"))
+	roleid, _ := strconv.Atoi(c.PostForm("role_id"))
+	*input = UserCreate{
+		Name: c.PostForm("name"), 
+		Password: generatePassword, 
+		RoleId: uint(roleid),
+		Email: c.PostForm("email"),
 	}
 	v = validator.New()
 	return v.Struct(input)

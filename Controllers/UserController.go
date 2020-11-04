@@ -8,33 +8,34 @@ import (
 )
 
 func UserIndex(c *gin.Context) {
-	var users []Models.UserShow
-	err := Config.DB.Find(&users).Error
+	var datas []Models.User
+	err := Config.DB.Find(&datas).Error
 	if err != nil {
-		Api.RespondJSON(c, 404, users)
+		Api.RespondJSON(c, 404, datas)
 	} else {
-		Api.RespondJSON(c, 200, users)
+		Api.RespondJSON(c, 200, datas)
 	}
 }
 
 func UserStore(c *gin.Context) {
 	var input Models.UserCreate
-	if err:= Models.ValidateUserCreate(c, &input); err != nil{
-		Api.RespondJSON(c, 422, err)
+	if err := Models.ValidateUserCreate(c, &input,); err != nil{
+		Api.RespondJSON(c, 422, err.Error())
+    	return
 	}
 
-	generatePassword, _ := Api.HashPassword(input.Password)
-	var user = Models.UserCreate{
+	var data = Models.User{
 		Name: input.Name, 
-		Password: generatePassword, 
+		Password: input.Password, 
 		RoleId: input.RoleId,
 		Email: input.Email,
 	}
-	err := Config.DB.Create(&user)
+
+	err := Config.DB.Create(&data).Error
 	if err != nil {
-		Api.RespondJSON(c, 404, user)
+		Api.RespondJSON(c, 404, "unknown error")
 	} else {
-		Api.RespondJSON(c, 200, user)
+		Api.RespondJSON(c, 200, data)
 	}
 }
 /*
