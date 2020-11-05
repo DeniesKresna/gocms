@@ -38,42 +38,49 @@ func UserStore(c *gin.Context) {
 		Api.RespondJSON(c, 200, data)
 	}
 }
-/*
-func GetOneBook(c *gin.Context) {
-	id := c.Params.ByName("id")
-	var book Models.Book
-	err := Models.GetOneBook(&book, id)
+
+func UserShow(c *gin.Context){
+	var data Models.User
+	err := Config.DB.First(&data, c.Param("id")).Error
 	if err != nil {
-		ApiHelpers.RespondJSON(c, 404, book)
-	} else {
-		ApiHelpers.RespondJSON(c, 200, book)
+		Api.RespondJSON(c, 404, "no data")
+	}else{
+		Api.RespondJSON(c, 200, data)
 	}
 }
 
-func PutOneBook(c *gin.Context) {
-	var book Models.Book
-	id := c.Params.ByName("id")
-	err := Models.GetOneBook(&book, id)
-	if err != nil {
-		ApiHelpers.RespondJSON(c, 404, book)
+func UserUpdate(c *gin.Context){
+	var input Models.UserUpdate
+	if err := Models.ValidateUserUpdate(c, &input); err != nil{
+		Api.RespondJSON(c, 422, err.Error())
 	}
-	c.BindJSON(&book)
-	err = Models.PutOneBook(&book, id)
-	if err != nil {
-		ApiHelpers.RespondJSON(c, 404, book)
+
+	var data Models.User
+
+	if err := Config.DB.First(&data, c.Param("id")).Error; err != nil{
+		Api.RespondJSON(c, 404, "no data")
+		return
+	}
+
+	err := Config.DB.Model(&data).Updates(input).Error
+	if err != nil{
+		Api.RespondJSON(c, 404, "unknown error")
 	} else {
-		ApiHelpers.RespondJSON(c, 200, book)
+		Api.RespondJSON(c, 200, data)
 	}
 }
 
-func DeleteBook(c *gin.Context) {
-	var book Models.Book
-	id := c.Params.ByName("id")
-	err := Models.DeleteBook(&book, id)
-	if err != nil {
-		ApiHelpers.RespondJSON(c, 404, book)
-	} else {
-		ApiHelpers.RespondJSON(c, 200, book)
+func UserDestroy(c *gin.Context){
+	var data Models.User
+	if err := Config.DB.First(&data, c.Param("id")).Error; err != nil{
+		Api.RespondJSON(c, 404, "no data")
+		return
+	}
+
+	name := data.Name
+	if err := Config.DB.Delete(&data).Error; err != nil{
+		Api.RespondJSON(c, 404, "unknown error")
+	}else{
+		Api.RespondJSON(c, 200, "success delete " + name)
 	}
 }
-*/

@@ -11,13 +11,10 @@ func SetupRouter() *gin.Engine {
 	v1 := r.Group("/v1")
 	{
 		v1.GET("/users", Controllers.UserIndex)
+		v1.GET("/users/:id", Controllers.UserShow)
 		v1.POST("/users", Controllers.UserStore)
-		/*
-		v1.POST("user", Controllers.AddNewUser)
-		v1.GET("user/:id", Controllers.GetOneUser)
-		v1.PUT("user/:id", Controllers.PutOneUser)
-		v1.DELETE("user/:id", Controllers.DeleteUser)
-		*/
+		v1.PATCH("/users/:id", Controllers.UserUpdate)
+		v1.DELETE("/users/:id", Controllers.UserDestroy)
 	}
 
 	return r
