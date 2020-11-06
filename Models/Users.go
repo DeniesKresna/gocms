@@ -24,14 +24,12 @@ type UserCreate struct{
 }
 
 type UserUpdate struct{
-	Name string `json:"name" binding:"required"`
+	Name string `json:"name" form:"name" validate:"required"`
 }
-
-var v *validator.Validate
 
 func ValidateUserCreate(c *gin.Context, input *UserCreate) error{
 	generatePassword, _ := Api.HashPassword(c.PostForm("password"))
-	if err := c.BindWith(input, binding.FormMultipart); err != nil{
+	if err := c.MustBindWith(input, binding.FormMultipart); err != nil{
 		return err
 	}
 	v = validator.New()
@@ -43,7 +41,7 @@ func ValidateUserCreate(c *gin.Context, input *UserCreate) error{
 }
 
 func ValidateUserUpdate(c *gin.Context, input *UserUpdate) error{
-	if err := c.ShouldBindJSON(input); err != nil{
+	if err := c.Bind(input); err != nil{
 		return err
 	}
 	v = validator.New()

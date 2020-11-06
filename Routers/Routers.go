@@ -15,6 +15,9 @@ func SetupRouter() *gin.Engine {
 		v1.POST("/users", Controllers.UserStore)
 		v1.PATCH("/users/:id", Controllers.UserUpdate)
 		v1.DELETE("/users/:id", Controllers.UserDestroy)
+
+		v1.GET("/roles", Controllers.RoleIndex)
+		v1.POST("/roles", Controllers.RoleStore)
 	}
 
 	return r

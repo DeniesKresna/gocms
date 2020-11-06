@@ -62,7 +62,7 @@ func UserUpdate(c *gin.Context){
 		return
 	}
 
-	err := Config.DB.Model(&data).Updates(input).Error
+	err := Config.DB.Model(&data).Update("name",input.Name).Error
 	if err != nil{
 		Api.RespondJSON(c, 404, "unknown error")
 	} else {

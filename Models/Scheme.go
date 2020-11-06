@@ -1,10 +1,8 @@
 package Models
 
 import (
-	"gorm.io/gorm"
+	"github.com/go-playground/validator/v10"
 )
 
-type Role struct {
-	gorm.Model
-	Name 	string `json:"name`
-}
+
+var v *validator.Validate
